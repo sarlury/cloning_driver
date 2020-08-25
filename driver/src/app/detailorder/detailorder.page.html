@@ -1,0 +1,227 @@
+<ion-header *ngIf="data">
+  <ion-toolbar color="danger">
+    <ion-icon name="chevron-back-outline" slot="start" class="back ion-margin" (click)="back()"></ion-icon>
+    Detail Order
+  </ion-toolbar>
+  </ion-header>
+
+<ion-content [fullscreen]="true" *ngIf="data">
+  <!-- <div [hidden]="pesanSelesai" class="container_selesai">
+    <img src="../../assets/selesai.png" alt="" srcset="">
+     <p class="tunggu">Paket Berhasil Dikirim</p>
+  </div> -->
+
+  <ion-grid [hidden]="pesanSelesai">
+    <ion-row>
+      <ion-col size="6"></ion-col>
+      <ion-col size="6">
+        <ion-button expand="block" fill="outline" color="success">
+          Paket Terkirim
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- delivery -->
+<hr />
+  <ion-label class="driver_label">Delivery</ion-label>
+<ion-grid fixed>
+  <ion-row>
+    <ion-col size="2" class="merchantx">
+      <ion-icon name="basket" class="icon_merchant"></ion-icon>
+    </ion-col>
+    <ion-col size="10">
+      <p class="hd">{{data.id_merchant.nama_marchant}}</p>
+    <ion-label class="address">{{data.id_merchant.alamat_merchant}}</ion-label>  
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col size="2" class="merchantx">
+      <ion-icon name="ellipsis-vertical-sharp" class="icon_titik"></ion-icon>
+    </ion-col>
+    <ion-col size="10">
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col size="2" class="merchantx">
+      <ion-icon name="navigate-circle-outline" class="icon_home"></ion-icon>
+    </ion-col>
+    <ion-col size="10">
+      <p class="hd">Jarak: {{data.jarak}} Km</p>
+      <ion-label class="address">{{data.user_alamat}}</ion-label>
+      <p class="detail_alamat_user">{{data.detail_alamat_user}}</p>
+    </ion-col>
+  </ion-row>
+</ion-grid>
+  <!-- end of delivery -->
+
+ 
+<!-- card users -->
+<ion-grid fixed>
+  <ion-row>
+    <ion-col size="6">
+      <p class="nama_user">{{data.user_name}}</p>
+    </ion-col>
+    <ion-col size="3">
+      <div (click)="call()" class="telp">
+        <a href="tel:{{data.user_phone}}" target="_blank" class="telp"><img src="../../assets/phone-icon.png" alt="" srcset="" width="20" height="20"></a>
+      </div>
+    </ion-col>
+    <ion-col size="3">
+      <ion-col size="6" class="map" (click)="toUser()">
+        <img src="../../assets/maps.png" alt="" srcset="" width="20" height="20">
+      </ion-col>
+    </ion-col>
+  </ion-row>
+</ion-grid>
+
+<!-- end card users -->
+  
+<!-- pesanan -->
+<hr />
+<ion-label class="driver_label">Pesanan</ion-label>
+
+<!-- card pesanan -->
+
+    <ion-grid class="ion-padding">
+      <ion-row>
+        <ion-col size="6">
+          <strong>{{data.id_paket.nama_paket}}</strong> 
+        </ion-col>
+        <ion-col size="6" class="kanan">
+          <strong>{{data.total_bayar | currency:'Rp ':true:'1.0'}}</strong>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  <ion-button class="btn_detail_paket" (click)="detail_paket(data.id_paket.id_paket)" expand="block" fill="outline" color="dark">
+    DETAIL PAKET
+  </ion-button>
+<!-- end of card pesanan -->
+<ion-grid>
+  <div class="container">
+    <ion-grid fixed>
+      <ion-row class="sts">
+        <ion-col size="6">
+          Subtotal
+        </ion-col>
+        <ion-col size="6" class="kanan">
+          {{data.total_bayar | currency:'Rp ':true:'1.0'}}
+        </ion-col>
+      </ion-row>
+      <ion-row class="sts">
+        <ion-col size="6">
+          Ongkir
+        </ion-col>
+        <ion-col size="6" class="kanan">
+          Rp 0
+        </ion-col>
+      </ion-row>
+      <ion-row class="sts">
+        <ion-col size="6">
+          Total
+        </ion-col>
+        <ion-col size="6" class="kanan">
+          {{data.total_bayar | currency:'Rp ':true:'1.0'}}
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-grid> 
+<!-- end of pesanan
+
+<!-- status -->
+<hr />
+<ion-label  class="driver_label">Status</ion-label>
+
+<ion-grid class="container_status">
+  <ion-row class="sts">
+    <ion-col size="12">
+      <ion-button (click)="encodedText()" expand="block" fill="outline" color="dark" class="kdTrans">
+        Kode Transaksi
+      </ion-button>
+    </ion-col>
+  </ion-row>
+  <ion-row class="sts">
+    <ion-col size="6">
+      Kode Voucher
+    </ion-col>
+    <ion-col size="6" class="kanan">
+     {{data.kode_voucher}}
+    </ion-col>
+  </ion-row>
+  <ion-row class="sts">
+    <ion-col size="6">
+      Maksimal Pengantaran
+    </ion-col>
+    <ion-col size="6" class="kanan">
+      {{data.tgl_pengiriman | date:"dd-MM-yyyy"}}
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col size="6">
+      Status
+    </ion-col>
+    <ion-col size="6" class="kanan">
+      {{statusPaket}}
+    </ion-col>
+  </ion-row>
+</ion-grid> 
+<!-- end of status -->
+
+<!-- notes -->
+<div class="container_notes" [hidden]="containerNotes">
+  <hr />
+<ion-label  class="driver_label">Kode Penerimaan</ion-label>
+
+<!-- scan kode penerimaan -->
+<ion-button (click)="scanCode()" class="scan_code ion-padding" fill="outline" color="dark">Scan Kode Penerimaan</ion-button>
+<!-- end of scan kode penerimaan -->
+
+<!-- Kode penerimaan -->
+<ion-item class="ion-margin">
+  <ion-input [hidden]="isKdv" type="text" [(ngModel)]="kdVoucherTrx" class="kdVoucherTrx" value={{kdVoucherTrx}} class="input_kode"></ion-input>
+  <ion-button [hidden]="isKdv" (click)="cekKode()" color="danger" shape="round">
+    Cek Kode  
+  </ion-button>
+  <p class="kdv">{{kdv}}</p>
+</ion-item>
+<!-- end of kode penerimaan -->
+
+<!-- notes -->
+<hr />
+<ion-label class="driver_label">Notes</ion-label>
+<p class="judul_notes">Isi kolom dibawah ini untuk menambahkan keterangan tentang pengiriman</p>
+<ion-item lines="none">
+  <ion-textarea [disabled]="noteDisabled" placeholder="Contoh: Paket Sudah Diterima User ATAU User Sedang Tidak Dirumah, Paket Diterima Saudara Serumah" [(ngModel)]="notes" class="notes"></ion-textarea>
+</ion-item>
+<!-- end of notes -->
+
+
+
+<!-- action button -->
+<ion-button [hidden]="start" (click)="mulai()" expand="block" color="success" class="selesai ion-padding">
+  Mulai
+</ion-button>
+</div>
+<!-- end of action button -->
+
+<!-- foto penerimaan paket -->
+<div [hidden]="isCamera" class="container_gambar">
+  <img src={{base64Image}} class="gambar" alt="img" />
+</div>
+<ion-toolbar [hidden]="isCamera">
+  <ion-buttons slot="start">
+    <ion-button (click)="presentActionSheet()" color="dark" fill="outline">
+      <ion-icon slot="start" name="camera"></ion-icon>
+      KAMERA
+    </ion-button>
+  </ion-buttons>
+</ion-toolbar>
+<!-- end foto penerimaan paket -->
+
+<!-- button selesai -->
+<ion-button [hidden]="end" (click)="selesai()" expand="block" color="success" class="selesai ion-padding">
+  Selesai
+</ion-button>
+<!-- end of button selesai -->
+</ion-content>

@@ -1,0 +1,49 @@
+.ion-margin {
+    text-align: center;
+}
+
+.container {
+    text-align: center;
+}
+.form {
+    padding: 15px;
+    margin: 8px;
+    border-radius: 20px;
+    margin-top: 40px;
+}
+.judulLogin {
+    color: #f2f2f2;
+}
+
+.register-button {
+    // text-align: center;
+    color: rgb(199, 115, 19);
+    font-size: 10px;
+    text-transform: lowercase;
+}
+.reg {
+    text-align: center;
+    align-items: center;
+}
+
+.kode {
+    font-weight: bold;
+    font-size: 1.2em;
+    padding-top: 15px;
+    padding-left: 10px;
+}
+
+.input-tel {
+    text-align: left;
+    border-bottom: 1px solid #ccc;
+}
+
+.btnlogin {
+    background: rgb(201,26,54);
+    background: linear-gradient(267deg, rgba(201,26,54,1) 0%, rgba(121,9,40,1) 96%);
+}
+
+ion-content {
+    --background: rgb(164,55,55);
+    --background: linear-gradient(311deg, rgba(164,55,55,1) 0%, rgba(142,17,30,1) 50%, rgba(80,12,12,1) 100%);
+}

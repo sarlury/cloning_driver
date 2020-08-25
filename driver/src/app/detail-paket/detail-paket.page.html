@@ -1,0 +1,16 @@
+<ion-content *ngIf="data">
+  <div class="container_gambar">
+    <ion-icon name="close-outline" class="dismiss" (click)="dismiss()"></ion-icon>
+    <img src={{data.gambar}} alt="" srcset="" class="gambar">
+
+  </div>
+
+<ion-card class="card_detail">
+  <ion-card-title>{{data.nama_paket}}</ion-card-title>
+  <ion-card-content >
+   <p class="space">{{data.isi_paket}}</p> 
+  </ion-card-content>
+  <hr />
+  <p class="harga">{{data.harga_paket | currency:'Rp ':true:'1.0'}}</p>
+</ion-card>
+</ion-content>

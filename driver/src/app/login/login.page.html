@@ -1,0 +1,21 @@
+<ion-content>
+  <div class="container">
+    <img src="../../assets/ic_logo_gaspol.png" alt="" class="logoLogin animated fadeInUp">
+    <ion-title class="ion-margin judulLogin">APLIKASI DRIVER</ion-title>
+    <!-- form logins -->
+    <ion-list class="form animated fadeInUp">
+      <ion-item>
+        <ion-icon slot="start" name="call-outline"></ion-icon>
+        <!-- <ion-label position="floating">Email</ion-label> -->
+        <ion-input type="tel" placeholder="No. Hp" [(ngModel)]="username"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-icon slot="start" name="lock-closed-outline"></ion-icon>
+        <ion-input type="password" placeholder="Password" [(ngModel)]="password"></ion-input>
+      </ion-item>
+      <ion-button (click)="login()" expand="block" color="danger" shape="round">
+        Login
+      </ion-button>
+    </ion-list> 
+  </div>
+  </ion-content>

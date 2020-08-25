@@ -1,0 +1,77 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="danger">
+    <img src="https://www.newgaspol.com/server_api/gambar/ic_launcher.png" alt="" width="50" height="50" class="head-logo">
+    <ion-title slot="end" class="title">
+      History Order
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="loadOrder($event)">
+    <ion-refresher-content
+    pullingIcon="chevron-down-circle-outline"
+    pullingText="Pull to refresh"
+    refreshingSpinner="circles"
+    refreshingText="Refreshing...">
+  </ion-refresher-content>
+</ion-refresher>
+<!-- card list -->
+<div [hidden]="pesanKosong" class="container_kosong">
+  <img src="../../assets/tunggu.png" alt="" srcset="">
+   <p class="tunggu">Maaf Kamu Belum Punya Orderan..</p>
+</div>
+<ion-card class="card_list" *ngFor="let data of datas" >
+  <ion-card-subtitle class="nama_marchant">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="6">
+         {{data.user_name}}
+        </ion-col>
+        <ion-col size="6" class="kanan">
+          {{data.created_at | date: 'dd-MM-yyyy'}}
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    </ion-card-subtitle>
+<ion-card-content>
+<p class="kode_voucher">kode Voucher {{data.kode_voucher}}</p>
+<p>Status: {{data.status}} </p>
+</ion-card-content>
+<hr />
+<ion-grid class="grid_detail">
+  <ion-row>
+    <ion-col size="6">
+      <p class="total_bayar ion-margin">{{data.id_merchant.nama_marchant}}</p>
+    </ion-col>
+    <ion-col size="6">
+      <ion-button (click)="detailOrder(data.id_trans)" class="detail" color="danger">
+        Detail
+      </ion-button>
+    </ion-col>
+  </ion-row>
+</ion-grid>
+
+</ion-card>
+
+
+
+
+<!-- <ion-card class="card_list" *ngFor="let data of datas" (click)="detailOrder(data.id_trans)">
+  <ion-card-subtitle>
+    <ion-grid fixed>
+      <ion-row>
+        <ion-col size="6">
+          {{data.user_name}}
+        </ion-col>
+        <ion-col size="6" class="kanan">
+          {{data.created_at | date: 'dd-MM-yyyy'}}
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card-subtitle>
+  <ion-card-content>
+    <p>{{data.id_merchant.nama_marchant}}</p> 
+  </ion-card-content>
+</ion-card> -->
+</ion-content>

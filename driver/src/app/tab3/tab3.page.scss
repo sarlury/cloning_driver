@@ -1,0 +1,64 @@
+.head-logo {
+    margin-right: 10px;
+    float: right;
+  }
+  
+  .title {
+    font-size: .9em;
+  }
+.btnCard {
+    background-color: rgb(146, 13, 13);
+    color: #f2f2f2;;
+    text-align: center;
+    padding: 10px;
+    margin: 4px;
+}
+.head-logo {
+    margin-left: 10px;
+  }
+.cs {
+    background: rgb(224, 79, 79);
+  }
+  ion-content ion-toolbar {
+    --background: translucent;
+  }
+  
+  .head-logo {
+    margin-right: 10px;
+    float: right;
+  }
+  
+  .title {
+    font-size: .9em;
+  }
+  .avatar {
+    background-color: rgb(124, 28, 28);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    .avatar_teks {
+      text-align: center;
+      font-size: 2.2em;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #f2f2f2;
+      padding: 15px;
+    }
+  }
+  .sub {
+    font-size: 35px;
+    opacity: .7;
+    font-weight: bolder;
+  }
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  ion-icon {
+    color: rgb(228, 72, 72);
+  }
