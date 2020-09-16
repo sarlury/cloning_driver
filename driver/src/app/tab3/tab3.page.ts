@@ -19,7 +19,7 @@ export class Tab3Page {
   ) {}
 
   ionViewDidEnter(){
-    this.storage.get('users_storage').then(res => {
+    this.storage.get('users').then(res => {
       this.full_name = res.full_name;
       this.email = res.email;
       this.phone = res.username;

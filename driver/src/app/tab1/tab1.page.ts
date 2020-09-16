@@ -26,10 +26,10 @@ export class Tab1Page {
   ) { }
 
   ngOnInit() {
-   this.storage.get('users_storage').then(res => {
-     console.log(res);
+   this.storage.get('users').then(res => {
+     console.log(res)
      this.full_name = res.full_name;
-   });
+   })
   }
 
   ionViewDidEnter(){

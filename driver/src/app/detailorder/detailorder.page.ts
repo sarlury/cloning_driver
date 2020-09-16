@@ -10,6 +10,7 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { DetailPaketPage } from '../detail-paket/detail-paket.page';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 import { Base64 } from '@ionic-native/base64/ngx';
+import { DetailorderService } from '../services/detailorder.service';
 
 @Component({
   selector: 'app-detailorder',
@@ -82,7 +83,8 @@ export class DetailorderPage implements OnInit {
     public actionCtrl: ActionSheetController,
     public camera: Camera,
     private base64: Base64,
-    public actionSheet: ActionSheetController
+    public actionSheet: ActionSheetController,
+    private detailOrderService: DetailorderService
   ) {
     this.barcodeScannerOptions = {
       showTorchButton: true,
@@ -97,6 +99,11 @@ export class DetailorderPage implements OnInit {
       console.log(res);
       this.id_trans = res.id_trans;
     });
+    this.loadData();
+    this.storage.get('users').then(res => {
+      console.log(res);
+      this.telpUser = res
+    })
   }
 
   // scan kode penerimaan
@@ -112,14 +119,15 @@ export class DetailorderPage implements OnInit {
     });
   }
 
-
-
   ionViewDidEnter(){
-    localStorage.getItem('token');
-    this.loadData();
-    this.storage.get('voucher_storage').then(res => {
-      console.log(res);
-      this.kdVoucherPengiriman;
+    this.storage.get('id_trans').then(res => {
+      if(res == null) {
+        this.start = false;
+        this.end = true;
+      } else if(res == this.id_trans) {
+        this.end = false;
+        this.start = true;
+      }
     })
   }
   
@@ -127,42 +135,28 @@ export class DetailorderPage implements OnInit {
     this.router.navigate(['tabs/tab2']);
   }
 
-  
   loadData() {
-    let headers = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'X-Api-Key': Constants.USER_API_KEY,
-      'X-Token': localStorage.getItem(this.Token)
-    })
-    let options = {
-      headers: headers
-    }
-
-    let httpResult = this.http.get(Constants.URL_API + "transaksi_detail/detail?id_trans="+this.id_trans+"", options);
-    httpResult.subscribe(res => {
+    this.detailOrderService.detailOrder(this.id_trans).subscribe(res => {
       console.log(res);
-      var parseObject = JSON.parse(JSON.stringify(res));
-      if(parseObject['status'] == true) {
-        this.data = res['data']['transaksi_detail'];
-        this.server = this.data;
-        if(this.data['status'] == "0") {
-          this.statusPaket = 'Sedang Diproses';
-          this.pesanSelesai = true;
-          this.isCamera = true;
-        } else if(this.data['status'] == "1") {
-          this.statusPaket = 'Paket Sudah Diambil Driver';
-          this.containerNotes = false;
-        } else {
-          this.statusPaket = 'Paket Diterima';
-          this.pesanSelesai =  false;
-          this.containerNotes = true;
-          this.isCamera = true;
-        }
-      }
-    }, err => {
-      alert("Connection Error. Please Logout or check your connection.");
-    });
+      this.data = res['data']['transaksi_detail'];
+      if(this.data['status'] == "0") {
+                this.statusPaket = 'Sedang Diproses';
+                this.pesanSelesai = true;
+                this.isCamera = true;
+              } else if(this.data['status'] == "1") {
+                this.statusPaket = 'Paket Sudah Diambil Driver';
+                this.containerNotes = false;
+              } else {
+                this.statusPaket = 'Paket Diterima';
+                this.pesanSelesai =  false;
+                this.containerNotes = true;
+                this.isCamera = true;
+              }
+    })
   }
+
+  
+ 
 
   // actionsheet detail pesanan
   async detail_paket(id_paket) {
@@ -192,8 +186,9 @@ export class DetailorderPage implements OnInit {
 
 
   
-  mulai() {
-    // this.router.navigate(['/direction']);
+  mulai(id_trans) {
+    console.log(id_trans);
+    this.storage.set('id_trans', id_trans);
       this.start = true;
       this.end = false;
       this.kode = false;
@@ -275,45 +270,51 @@ export class DetailorderPage implements OnInit {
     console.log(this.tel)
   }
 
-  cekKode() {
-      if(this.kdVoucherTrx == "") {
-        alert("Anda Belum Input Kode Penerimaan");
-      } else {
-        let headers = new HttpHeaders({
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'X-Api-Key': Constants.USER_API_KEY,
-          'X-Token': localStorage.getItem(this.Token)
-        })
-        let options = {
-            headers: headers
-        }
-  
-        let body = new HttpParams();
-        body = body.append('noTelp', this.data['user_phone']);
-        body = body.append('kdVoucherPengiriman', this.data['kode_voucher']);
-        body = body.append('kdVoucherTrx', this.kdVoucherTrx);
-  
-        let httpResult = this.http.post(Constants.URL_API + "voucher/kdVoucherTrxverifikasi", body.toString(), options);
-        httpResult.subscribe(res => {
-          console.log(res);
-          var parseObject = JSON.parse(JSON.stringify(res));
-          if(parseObject['message']['code'] == "00") {
-            alert("kode Terverifikasi");
-            this.isKdv = true;
-            this.kdv = this.kdVoucherTrx;
-          } else {
-            alert(parseObject['message']['description']);
-          }
-        }, err => {
-          alert("Connection Error. Please Logout or check your connection.");
-        });
+  cekKode(noTelp, vcrPengiriman, vcrTrx) {
+    this.detailOrderService.kodePenerimaan(noTelp =  this.data['user_phone'], vcrPengiriman = this.data['kode_voucher'], vcrTrx = this.kdVoucherTrx ).subscribe(res => {
+      console.log(res);
+    })
+  }
 
-      }
+//   cekKode() {
+//       if(this.kdVoucherTrx == "") {
+//         alert("Anda Belum Input Kode Penerimaan");
+//       } else {
+//         let headers = new HttpHeaders({
+//           'Content-Type': 'application/x-www-form-urlencoded',
+//           'X-Api-Key': Constants.USER_API_KEY,
+//           'X-Token': localStorage.getItem(this.Token)
+//         })
+//         let options = {
+//             headers: headers
+//         }
   
-}
+//         let body = new HttpParams();
+//         body = body.append('noTelp', this.data['user_phone']);
+//         body = body.append('kdVoucherPengiriman', this.data['kode_voucher']);
+//         body = body.append('kdVoucherTrx', this.kdVoucherTrx);
+  
+//         let httpResult = this.http.post(Constants.URL_API + "voucher/kdVoucherTrxverifikasi", body.toString(), options);
+//         httpResult.subscribe(res => {
+//           console.log(res);
+//           var parseObject = JSON.parse(JSON.stringify(res));
+//           if(parseObject['message']['code'] == "00") {
+//             alert("kode Terverifikasi");
+//             this.isKdv = true;
+//             this.kdv = this.kdVoucherTrx;
+//           } else {
+//             alert(parseObject['message']['description']);
+//           }
+//         }, err => {
+//           alert("Connection Error. Please Logout or check your connection.");
+//         });
+
+//       }
+// }
 
 
   async selesai() {
+    this.storage.remove('id_trans');
     if(this.notes == "") {
       alert("Anda Belum Mengisi Notes");
     } else if(this.cameraData == null) {

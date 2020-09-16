@@ -43,3 +43,21 @@ hr {
   margin: 20px;
   color: rgb(161, 15, 15);
 }
+.segment {
+  // padding: 15px;
+  // background-color: rgb(138, 26, 26);
+  border-bottom: 1px solid #8a8a8a;
+}
+.segment:active {
+  --border-bottom: none;
+  --color: #f2f2f2;
+}
+.segment_btn {
+  --color-checked:  rgb(224, 79, 79);
+  // --background-checked: rgb(224, 79, 79);
+  color: #3d3d3d;
+}
+.segment_btn::after {
+  color: #f2f2f2;
+  border-bottom: none;
+}

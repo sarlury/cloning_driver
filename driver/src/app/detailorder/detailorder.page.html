@@ -89,7 +89,7 @@
           <strong>{{data.id_paket.nama_paket}}</strong> 
         </ion-col>
         <ion-col size="6" class="kanan">
-          <strong>{{data.total_bayar | currency:'Rp ':true:'1.0'}}</strong>
+          <strong>Rp {{data.total_bayar | number:'1.0'}}</strong>
         </ion-col>
       </ion-row>
     </ion-grid>
@@ -105,7 +105,7 @@
           Subtotal
         </ion-col>
         <ion-col size="6" class="kanan">
-          {{data.total_bayar | currency:'Rp ':true:'1.0'}}
+          Rp {{data.total_bayar | number:'1.0'}}
         </ion-col>
       </ion-row>
       <ion-row class="sts">
@@ -121,7 +121,7 @@
           Total
         </ion-col>
         <ion-col size="6" class="kanan">
-          {{data.total_bayar | currency:'Rp ':true:'1.0'}}
+         Rp {{data.total_bayar | number:'1.0'}}
         </ion-col>
       </ion-row>
     </ion-grid>
@@ -199,7 +199,7 @@
 
 
 <!-- action button -->
-<ion-button [hidden]="start" (click)="mulai()" expand="block" color="success" class="selesai ion-padding">
+<ion-button [hidden]="start" (click)="mulai(id_trans)" expand="block" color="success" class="selesai ion-padding">
   Mulai
 </ion-button>
 </div>

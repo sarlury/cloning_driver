@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Constants } from '../Constants.models';
+import { DetailpaketService } from '../services/detailpaket.service';
 
 @Component({
   selector: 'app-detail-paket',
@@ -17,13 +18,13 @@ export class DetailPaketPage implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private detailService: DetailpaketService
   ) { }
 
   ngOnInit() {
     this.idx = (`${this.id}`);
     console.log(this.idx);
-    localStorage.getItem('token');
   }
 
   ionViewDidEnter(){
@@ -33,30 +34,36 @@ export class DetailPaketPage implements OnInit {
    dismiss() {
     this.modalCtrl.dismiss();
   }
+
+  loadDetail() {
+    // this.detailService.detailPaket().subscribe(res => {
+    //   console.log(res);
+    // })
+  }
  
-   loadDetail() {
-     let headers = new HttpHeaders({
-       'Content-Type': 'application/x-www-form-urlencoded',
-       'X-Api-Key': Constants.USER_API_KEY,
-       'X-Token': localStorage.getItem(this.Token)
-     })
-     let options = {
-         headers: headers
-     }
+  //  loadDetail() {
+  //    let headers = new HttpHeaders({
+  //      'Content-Type': 'application/x-www-form-urlencoded',
+  //      'X-Api-Key': Constants.USER_API_KEY,
+  //      'X-Token': localStorage.getItem(this.Token)
+  //    })
+  //    let options = {
+  //        headers: headers
+  //    }
  
-     let httpResult = this.http.get(Constants.URL_API + "paket/detail?id_paket="+this.idx+"", options);
-     httpResult.subscribe(res => {
-       console.log(res);
-       var parseObject = JSON.parse(JSON.stringify(res));
-       console.log(parseObject['message'])
-      //  if(parseObject['status'] == true){
-      //    this.data = res['data']['paket'];
-      //  } else if(parseObject['status'] == false) {
-      //    alert(parseObject['message']);
-      //  }
-     }, err => {
-       console.log("Connection error. Please logout or check your connection.");
-     })
-   }
+  //    let httpResult = this.http.get(Constants.URL_API + "paket/detail?id_paket="+this.idx+"", options);
+  //    httpResult.subscribe(res => {
+  //      console.log(res);
+  //      var parseObject = JSON.parse(JSON.stringify(res));
+  //      console.log(parseObject['message'])
+  //     //  if(parseObject['status'] == true){
+  //     //    this.data = res['data']['paket'];
+  //     //  } else if(parseObject['status'] == false) {
+  //     //    alert(parseObject['message']);
+  //     //  }
+  //    }, err => {
+  //      console.log("Connection error. Please logout or check your connection.");
+  //    })
+  //  }
 
 }
