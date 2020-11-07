@@ -61,7 +61,7 @@ export class DetailorderPage implements OnInit {
   kdPenerimaan: any;
   kdVoucherPengiriman: string = "";
   statusPaket: any;
-  kdVoucherTrx: any;
+  kdVoucherTrx: string = "";
   kdv: any;
   isKdv: boolean = false;
   server: string;
@@ -113,6 +113,7 @@ export class DetailorderPage implements OnInit {
     .then(barcodeData => {
       // alert("Barcode Data:" + JSON.stringify(barcodeData));
       this.kdVoucherTrx = barcodeData['text'];
+      this.cekKode(null, null, null);
     })
     .catch(err => {
       console.log("Error", err)
@@ -127,6 +128,8 @@ export class DetailorderPage implements OnInit {
       } else if(res == this.id_trans) {
         this.end = false;
         this.start = true;
+        this.isCamera = false;
+        this.noteDisabled = false;
       }
     })
   }
@@ -135,6 +138,7 @@ export class DetailorderPage implements OnInit {
     this.router.navigate(['tabs/tab2']);
   }
 
+  // load isi orderan
   loadData() {
     this.detailOrderService.detailOrder(this.id_trans).subscribe(res => {
       console.log(res);
@@ -185,10 +189,12 @@ export class DetailorderPage implements OnInit {
     }
 
 
-  
+  // button mulai
   mulai(id_trans) {
-    console.log(id_trans);
-    this.storage.set('id_trans', id_trans);
+    this.storage.get('id_trans').then(async res => {
+      if(res == null) {
+      this.storage.set('id_trans', id_trans)
+      console.log(id_trans);
       this.start = true;
       this.end = false;
       this.kode = false;
@@ -196,6 +202,7 @@ export class DetailorderPage implements OnInit {
       this.btnNote = false;
       this.isCamera = false;
       
+      // buka google maps
         let options: LaunchNavigatorOptions = {
           start: [this.data['id_merchant']['ltd_start'], this.data['id_merchant']['lng_start']],
           app: this.launchNavigator.APP.GOOGLE_MAPS
@@ -209,6 +216,18 @@ export class DetailorderPage implements OnInit {
         }, error => {
           console.log(error);
         });
+      } else {
+        const alert = await this.alertCtrl.create({
+          message: "Ada order yang belum Anda selesaikan.",
+          buttons: [{
+            text: 'Ok',
+            role: 'ok'
+          }]
+        });
+        alert.present();
+      }
+    })
+    
 
   }
 
@@ -267,13 +286,25 @@ export class DetailorderPage implements OnInit {
 
   call() {
     window.open(`tel:${this.telponDriver}`, '_system');
-    console.log(this.tel)
+    console.log(this.tel);
   }
 
-  cekKode(noTelp, vcrPengiriman, vcrTrx) {
-    this.detailOrderService.kodePenerimaan(noTelp =  this.data['user_phone'], vcrPengiriman = this.data['kode_voucher'], vcrTrx = this.kdVoucherTrx ).subscribe(res => {
-      console.log(res);
-    })
+
+  // button cek kode penerimaan
+  cekKode(kdVoucherPengiriman, noTelp, vcrTrx) {
+    if(this.kdVoucherTrx == "") {
+      this.presentToast("Kode Penerimaan masih kosong", 1500);
+    } else {
+      this.detailOrderService.kodePenerimaan(
+        kdVoucherPengiriman = this.kdVoucherTrx, 
+        noTelp =  this.data['user_phone'], 
+        vcrTrx =  this.data['kode_voucher']).subscribe(res => {
+        console.log("cek kode",res);
+        this.isKdv = true;
+        this.kdv = this.kdVoucherTrx;
+      });
+
+    }
   }
 
 //   cekKode() {
@@ -312,71 +343,12 @@ export class DetailorderPage implements OnInit {
 //       }
 // }
 
-
-  async selesai() {
-    this.storage.remove('id_trans');
-    if(this.notes == "") {
-      alert("Anda Belum Mengisi Notes");
-    } else if(this.cameraData == null) {
-      alert("Anda Belum Memfoto Customer");
-    } else {
-      let headers = new HttpHeaders({
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'X-Api-Key': Constants.USER_API_KEY,
-        'X-Token': localStorage.getItem(this.Token)
-      })
-      let options = {
-          headers: headers
-      }
-  
-      let body = new HttpParams();
-      body = body.append('id_trans', this.id_trans)
-      body = body.append('kode_penerimaan', this.kdVoucherTrx);
-      body = body.append('status', "2");
-      body = body.append('notes', this.notes);
-      body = body.append('gambar_penerimaan', this.cameraData)
-  
-      let httpResult = this.http.post(Constants.URL_API + "transaksi_detail/updatepenerimaan?id_trans"+this.id_trans+"", body.toString(), options);
-      httpResult.subscribe(async (res) => {
-        console.log(res);
-        
-        const alert = await this.alertCtrl.create({
-          message: "Paket Berhasil Dikirim",
-          backdropDismiss: true,
-          buttons: [{
-            text: "Ok"
-          }]
-        });
-        alert.present();
-        this.router.navigate(['/tabs']);
-      }, err => {
-        alert("Connection Error. Please Logout or check your connection.");
-      });
-
-    }
-  }
-
-async presentToast(a, b) {
-  const toast = await this.toastCtrl.create({
-    message: a,
-    duration: b
-  });
-  toast.present
-}
-
-async loadingPresent(a) {
-  const loading = await this.loadCtrl.create({
-    message: a
-  });
-  loading.present();
-}
-
 // camera
 
 async presentActionSheet() {
   let actionSheet = await this.actionSheet.create({
     header: 'Select Image Source',
-    mode: 'ios',
+    mode: 'md',
     buttons: [
       {
         text: 'Load From Library',
@@ -435,5 +407,95 @@ openGallery() {
     this.base64Image = `data:image/png;base64,${imageData}`;
   }); 
 }
+
+// end camera
+
+
+// button selesai ini akan update ke tabel detail transaksi
+    selesai(id_trans, kdVoucherTrx, status, notes, cameraData) {
+      if(this.notes == "") {
+        this.presentToast("Anda belum mengisi Notes", 1500);
+      } else {
+        this.detailOrderService.selesaiOrder(
+          id_trans = this.id_trans, 
+          kdVoucherTrx = this.kdVoucherTrx, 
+          status = '2', 
+          notes = this.notes,
+          cameraData = this.cameraData).subscribe(async res => {
+          console.log("berhasil disimpan",res);
+          this.storage.remove("id_trans");
+          // const alert = await this.alertCtrl.create({
+          //           message: "Paket Berhasil Dikirim",
+          //           backdropDismiss: true,
+          //           buttons: [{
+          //             text: "Ok"
+          //           }]
+          //         });
+          //         alert.present();
+                  this.router.navigate(['/tabs']); 
+        });
+
+      }
+    }
+  // async selesai() {
+  //   this.storage.remove('id_trans');
+  //   if(this.notes == "") {
+  //     alert("Anda Belum Mengisi Notes");
+  //   } else if(this.cameraData == null) {
+  //     alert("Anda Belum Memfoto Customer");
+  //   } else {
+  //     let headers = new HttpHeaders({
+  //       'Content-Type': 'application/x-www-form-urlencoded',
+  //       'X-Api-Key': Constants.USER_API_KEY,
+  //       'X-Token': localStorage.getItem(this.Token)
+  //     })
+  //     let options = {
+  //         headers: headers
+  //     }
+  
+  //     let body = new HttpParams();
+  //     body = body.append('id_trans', this.id_trans)
+  //     body = body.append('kode_penerimaan', this.kdVoucherTrx);
+  //     body = body.append('status', "2");
+  //     body = body.append('notes', this.notes);
+  //     body = body.append('gambar_penerimaan', this.cameraData)
+  
+  //     let httpResult = this.http.post(Constants.URL_API + "transaksi_detail/updatepenerimaan?id_trans"+this.id_trans+"", body.toString(), options);
+  //     httpResult.subscribe(async (res) => {
+  //       console.log(res);
+        
+  //       const alert = await this.alertCtrl.create({
+  //         message: "Paket Berhasil Dikirim",
+  //         backdropDismiss: true,
+  //         buttons: [{
+  //           text: "Ok"
+  //         }]
+  //       });
+  //       alert.present();
+  //       this.router.navigate(['/tabs']);
+  //     }, err => {
+  //       alert("Connection Error. Please Logout or check your connection.");
+  //     });
+
+  //   }
+  // }
+
+async presentToast(a, b) {
+  const toast = await this.toastCtrl.create({
+    message: a,
+    duration: b,
+    position: 'middle'
+  });
+  toast.present();
+}
+
+async loadingPresent(a) {
+  const loading = await this.loadCtrl.create({
+    message: a
+  });
+  loading.present();
+}
+
+
 
 }

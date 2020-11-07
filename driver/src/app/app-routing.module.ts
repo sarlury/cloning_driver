@@ -19,9 +19,6 @@ const routes: Routes = [
     loadChildren: () => import('./maps/maps.module').then( m => m.MapsPageModule)
   },
   {
-    path: 'direction',
-    loadChildren: () => import('./direction/direction.module').then( m => m.DirectionPageModule)
-  },  {
     path: 'detail-paket',
     loadChildren: () => import('./detail-paket/detail-paket.module').then( m => m.DetailPaketPageModule)
   }

@@ -13,7 +13,7 @@
         <ion-icon slot="start" name="lock-closed-outline"></ion-icon>
         <ion-input type="password" placeholder="Password" [(ngModel)]="password"></ion-input>
       </ion-item>
-      <ion-button (click)="login()" expand="block" color="danger" shape="round">
+      <ion-button (click)="login(username, password)" expand="block" color="danger" shape="round">
         Login
       </ion-button>
     </ion-list> 

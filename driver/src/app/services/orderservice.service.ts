@@ -29,7 +29,6 @@ export class OrderserviceService {
   loadOrder(id: any): Observable<any> {
     return this.http.get<any>(Constants.URL_API + "transaksi_detail/all?filter="+ id +"&field=id_aauth_users")
       .pipe(
-        retry(3),
         tap(_ => this.log('response received')),
         catchError(this.handleError('get Details', []))
       );

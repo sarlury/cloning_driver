@@ -19,7 +19,7 @@ export class DetailPaketPage implements OnInit {
   constructor(
     private http: HttpClient,
     private modalCtrl: ModalController,
-    private detailService: DetailpaketService
+    private detailPaketService: DetailpaketService
   ) { }
 
   ngOnInit() {
@@ -28,17 +28,18 @@ export class DetailPaketPage implements OnInit {
   }
 
   ionViewDidEnter(){
-    this.loadDetail();
+    this.loadDetail(null);
    }
 
    dismiss() {
     this.modalCtrl.dismiss();
   }
 
-  loadDetail() {
-    // this.detailService.detailPaket().subscribe(res => {
-    //   console.log(res);
-    // })
+  loadDetail(id) {
+    this.detailPaketService.detailPaket(id = this.idx).subscribe(res => {
+      console.log(res);
+      this.data = res['data']['paket'];
+    })
   }
  
   //  loadDetail() {

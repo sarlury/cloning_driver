@@ -180,7 +180,7 @@
 <!-- Kode penerimaan -->
 <ion-item class="ion-margin">
   <ion-input [hidden]="isKdv" type="text" [(ngModel)]="kdVoucherTrx" class="kdVoucherTrx" value={{kdVoucherTrx}} class="input_kode"></ion-input>
-  <ion-button [hidden]="isKdv" (click)="cekKode()" color="danger" shape="round">
+  <ion-button [hidden]="isKdv" (click)="cekKode(kdVoucherPengiriman, telpUser, kdVoucherTrx)" color="danger" shape="round">
     Cek Kode  
   </ion-button>
   <p class="kdv">{{kdv}}</p>
@@ -220,7 +220,7 @@
 <!-- end foto penerimaan paket -->
 
 <!-- button selesai -->
-<ion-button [hidden]="end" (click)="selesai()" expand="block" color="success" class="selesai ion-padding">
+<ion-button [hidden]="end" (click)="selesai(id_trans, kdVoucherTrx, start, notes, cameraData)" expand="block" color="success" class="selesai ion-padding">
   Selesai
 </ion-button>
 <!-- end of button selesai -->

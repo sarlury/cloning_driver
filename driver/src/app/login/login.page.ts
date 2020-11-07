@@ -15,8 +15,8 @@ import { map, switchMap } from 'rxjs/operators';
 export class LoginPage implements OnInit {
 
   Token = 'token';
-  username: any;
-  password: any;
+  username: string = "";
+  password: string = "";
   isLogin: 'status';
   users: any;
   constructor(
@@ -99,19 +99,28 @@ export class LoginPage implements OnInit {
   //   }
   // }
 
-  login(username, password) {
-    this.userService.loginUser(username = this.username, password = this.password).subscribe(res => {
-      this.navCtrl.navigateRoot(['/']);
+  async login(username, password) {
+    if(this.username == "") {
+      this.presentToast("Masukan Nomor Hp Anda", 1500)
+    } else if(this.password == "") {
+      this.presentToast("Masukan Password Anda", 1500)
+    } else {
+      this.userService.loginUser(username = this.username, password = this.password).subscribe(res => {
+        this.navCtrl.navigateRoot(['/']);
+      }
+      )
+
     }
-    )
   }
 
 
   async presentToast(a, b) {
     const toast = await this.toastCtrl.create({
       message: a,
-      duration: b
+      duration: b,
+      position: "middle"
     });
+    toast.present();
   }
 
 }

@@ -1,8 +1,8 @@
 import { Injectable, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Storage } from '@ionic/storage';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { Constants } from '../Constants.models';
 
 @Injectable({
@@ -24,12 +24,26 @@ export class DetailpaketService implements OnInit {
   }
 
   ionViewDidEnter(){
-   this.detailPaket();
+   this.detailPaket(null);
   }
 
-  detailPaket(): Observable<any> {
-    return this.http.get<any>(Constants.URL_API + "paket/detail?id_paket=" + this.idx +"").pipe(
-      map(response => console.log(response))
+  detailPaket(id): Observable<any> {
+    return this.http.get<any>(Constants.URL_API + "paket/detail?id_paket=" + id +"").pipe(
+      tap(_=> this.log('response received') )
     )
+  }
+
+  private handleError<T>(operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+      console.error(error);
+      // log
+      this.log(`${operation} failed: ${error.message}`);
+
+      return of(result as T);
+    }
+  }
+
+  private log(message: string) {
+    console.log(message);
   }
 }

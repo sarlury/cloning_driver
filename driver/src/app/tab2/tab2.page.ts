@@ -35,7 +35,7 @@ export class Tab2Page implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    
+    // this.loadOrder(null);
     this.storage.get('users').then(res => {
       console.log(res.id);
       this.id_driver = JSON.parse(res.id);
@@ -43,15 +43,17 @@ export class Tab2Page implements OnInit, OnDestroy {
     });
   }
   ionViewDidEnter(){
-    this.loadOrder();
-    const x = localStorage.getItem('users');
+    this.loadOrder(null);
+    localStorage.getItem('users');
   }
 
-  loadOrder() {
+  loadOrder(event) {
     this.orderService.loadOrder(this.id_driver).subscribe(res => {
       console.log(res);
       this.datas = res.data.transaksi_detail;
-      console.log(this.datas)
+      console.log(this.datas);
+      if(event) 
+        event.target.complete();
       this.datas.forEach(e => {
                 if(e['status'] == "0") {
                   e['status'] = 'Sedang Diproses';
@@ -110,5 +112,11 @@ export class Tab2Page implements OnInit, OnDestroy {
     //Add 'implements OnDestroy' to the class.
     
   }
+
+  // doRefresh(event) {
+  //   setTimeout(() => {
+  //     event.target.complete();
+  //   }, 2000);
+  // }
 
 }

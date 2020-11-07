@@ -25,13 +25,13 @@ export class AppComponent {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
     });
-    // this.storage.get('session_storage').then((res) => {
-    //   if(res == null) {
-    //     this.navCtrl.navigateRoot(['/login']);
-    //   } else {
-    //     this.navCtrl.navigateRoot(['/']);
-    //   }
-    // });
+    this.storage.get('token').then((res) => {
+      if(res == "") {
+        this.navCtrl.navigateRoot(['/login']);
+      } else {
+        this.navCtrl.navigateRoot(['/']);
+      }
+    });
   }
 
   

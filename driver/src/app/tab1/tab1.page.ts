@@ -23,7 +23,11 @@ export class Tab1Page {
     private uniqueDeviceID: UniqueDeviceID,
     private uid: Uid,
     private androidPermissions: AndroidPermissions
-  ) { }
+  ) {
+    this.platform.backButton.subscribeWithPriority(10, () => {
+
+    });
+   }
 
   ngOnInit() {
    this.storage.get('users').then(res => {

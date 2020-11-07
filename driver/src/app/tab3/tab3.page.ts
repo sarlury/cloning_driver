@@ -29,10 +29,9 @@ export class Tab3Page {
 
   logout() {
     this.storage.remove('pass_storage');
-    this.storage.remove('token_storage');
+    this.storage.remove('token');
     this.storage.remove('username_storage');
-    this.storage.remove('users_storage');
-    this.storage.remove('email_storage');
+    this.storage.remove('users');
     this.storage.remove('order_storage');
     localStorage.removeItem('token');
     localStorage.removeItem('undefined');

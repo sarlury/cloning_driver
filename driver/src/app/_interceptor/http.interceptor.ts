@@ -3,14 +3,15 @@ import { HttpInterceptor, HttpEvent, HttpErrorResponse, HttpHandler, HttpRequest
 import { Observable, throwError } from 'rxjs';
 import { map, catchError, finalize } from 'rxjs/operators';
 import { Constants } from '../Constants.models';
-import { LoadingController } from '@ionic/angular';
+import { LoadingController, NavController } from '@ionic/angular';
 
 @Injectable()
 
 export class HttpConfigInterceptor implements HttpInterceptor{
 
     constructor(
-        private loadCtrl: LoadingController
+        private loadCtrl: LoadingController,
+        private navCtrl: NavController
     ) {}
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -51,10 +52,17 @@ export class HttpConfigInterceptor implements HttpInterceptor{
                 return event;
             }),
             catchError((error: HttpErrorResponse) => {
-                alert(error.error.message);
+                if(error.status === 401 || 500 || 400 || 406) {
+                    alert(error.error.message);
+                    this.navCtrl.navigateRoot(['/login']);
+                    this.hideLoader();                                                                                                                 
+                    return throwError;
+                } else {
+                    alert(error.error.message);
+                    this.hideLoader();                                                                                                                 
+                    return throwError;
+                }
                 // loader will dismissed when complete error
-                // this.hideLoader();
-                return throwError(error);
             }));
     }
 
