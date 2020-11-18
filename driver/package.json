@@ -116,7 +116,9 @@
         "GOOGLE_API_KEY_FOR_ANDROID": "{AIzaSyBr7b73n5K1DGVVFz2mKTpLzqpeWq4w1HA}",
         "OKHTTP_VERSION": "3.12.0"
       },
-      "phonegap-plugin-barcodescanner": {},
+      "phonegap-plugin-barcodescanner": {
+        "ANDROID_SUPPORT_V4_VERSION": "27.+"
+      },
       "cordova-plugin-camera": {
         "ANDROID_SUPPORT_V4_VERSION": "27.+"
       },
